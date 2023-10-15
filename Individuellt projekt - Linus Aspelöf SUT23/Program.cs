@@ -1,4 +1,6 @@
-﻿namespace Individuellt_projekt_Bankomaten___Linus_Aspelöf_SUT23;
+﻿using System;
+
+namespace Individuellt_projekt_Bankomaten___Linus_Aspelöf_SUT23;
 // Linus Aspelöf SUT23
 
 /* Seperating User and Account into seperate classes for easier
@@ -30,7 +32,8 @@ class Account
 }
 class Program
 {
-    // Creates a static list with the User object for use in other methods
+    /* Creates a static list with the User object for use in other methods
+       Also adds a list element with accounts for each user*/
     static List<User> users = new List<User>
     {
         new User("user1", "1234")
@@ -104,9 +107,11 @@ class Program
                 {
                     case 1:
                         BankBalance();
+                        Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta");
+                        Console.ReadKey();
                         break;
                     case 2:
-                        //BankTransfer
+                        BankTransfer();
                         break;
                     case 3:
                         //Withdraw
@@ -119,9 +124,9 @@ class Program
             else
             {
                 Console.WriteLine("\n\tError: Ogiltigt input, Vänligen ange 1-4.");
+                Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta");
+                Console.ReadKey();
             }
-            Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta");
-            Console.ReadKey();
         }
     }
 
@@ -164,7 +169,7 @@ class Program
     // Method to check bank balance
     static void BankBalance()
     {
-        Console.WriteLine("\n\tDina konton och saldo:");
+        Console.WriteLine("\n\tDina konton & saldo:");
 
         foreach (var account in currentUser.Accounts)
         {
@@ -175,7 +180,56 @@ class Program
     // Method to transfer between accounts
     static void BankTransfer()
     {
+        Console.Clear();
+        Console.WriteLine("\n\t-- Överföring mellan konton --");
+        BankBalance();
 
+        Console.Write("\n\tVälj konto att ta pengar från: ");
+        string fromAcct = Console.ReadLine();
+
+        Console.Write("\n\tVälj konto att flytta pengar till: ");
+        string toAcct = Console.ReadLine();
+
+        Console.Write("\n\tAnge summa att flytta: ");
+        if (decimal.TryParse(Console.ReadLine(), out decimal amount)) 
+        {
+            Account fromAccount = currentUser.Accounts.Find(acc => acc.Name == fromAcct);
+            Account toAccount = currentUser.Accounts.Find(acc => acc.Name == toAcct);
+
+            if (fromAccount != null && toAccount != null)
+            {
+                if (fromAccount.Balance >= amount)
+                {
+                    fromAccount.Balance -= amount;
+                    toAccount.Balance += amount;
+                    Console.WriteLine("\n\tÖverföringen lyckades.");
+                    BankBalance();
+                    Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+                    Console.ReadKey();
+                    return;
+
+                }
+                else
+                {
+                    Console.WriteLine("\n\tError: Du har för lite pengar på kontot.");
+                    Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+                    Console.ReadKey();
+                }
+            }
+            else
+            {
+                Console.WriteLine("\n\tEtt eller båda konton finns inte.");
+                Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+                Console.ReadKey();
+            }
+        }
+        else
+        {
+            Console.WriteLine("\n\tOgiltigt belopp.");
+            Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+            Console.ReadKey();
+            return;
+        }
     }
 
     // Method to Withdraw from accounts
