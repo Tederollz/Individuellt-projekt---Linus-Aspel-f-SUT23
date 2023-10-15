@@ -94,7 +94,7 @@ class Program
         while (run)
         {
             Console.Clear();
-            Console.WriteLine("\n\tVälj en av följande alternativ:" +
+            Console.WriteLine("\n\tVälj en av följande alternativ:\n" +
                 "\n\t[1] Se dina konton och saldo" +
                 "\n\t[2] Överföring mellan konton" +
                 "\n\t[3] Ta ut pengar" +
@@ -114,10 +114,10 @@ class Program
                         BankTransfer();
                         break;
                     case 3:
-                        //Withdraw
+                        Withdraw();
                         break;
                     case 4:
-                        //Logout
+                        Logout();
                         break;
                 }
             }
@@ -135,6 +135,7 @@ class Program
        3 failed attempts*/
     static void Login()
     {
+        Console.Clear();
         Console.WriteLine("\n\tVälkommen till Bankomaten!");
         while (loginAttempts < 3)
         {
@@ -206,8 +207,6 @@ class Program
                     BankBalance();
                     Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
                     Console.ReadKey();
-                    return;
-
                 }
                 else
                 {
@@ -225,22 +224,76 @@ class Program
         }
         else
         {
-            Console.WriteLine("\n\tOgiltigt belopp.");
+            Console.WriteLine("\n\tError: Ogiltigt input.");
             Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
             Console.ReadKey();
-            return;
         }
     }
 
     // Method to Withdraw from accounts
     static void Withdraw()
     {
+        Console.Clear();
+        Console.WriteLine("\n\t-- Ta ut pengar --");
+        BankBalance();
 
+        Console.Write("\n\tVälj konto att ta ut pengar från: ");
+        string FromAcct = Console.ReadLine();
+
+        Console.Write("\n\tAnge summa att ta ut: ");
+        if (decimal.TryParse(Console.ReadLine(), out decimal amount))
+        {
+            Account account = currentUser.Accounts.Find(acc => acc.Name == FromAcct);
+
+            if(account != null)
+            {
+                if(account.Balance >= amount)
+                {
+                    Console.Write("\n\tAnge din pinkod för bekräftelse: ");
+                    string pin = Console.ReadLine();
+                    if (pin == currentUser.Pin)
+                    {
+                        account.Balance -= amount;
+                        Console.WriteLine($"\n\tUttaget lyckades." +
+                            $"\n\t{FromAcct}: {account.Balance:C}");
+                        Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.WriteLine("\n\tFelaktig pinkod.");
+                        Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+                        Console.ReadKey();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\n\tError: Du har för lite pengar på kontot.");
+                    Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+                    Console.ReadKey();
+                }
+            }
+            else
+            {
+                Console.WriteLine("\n\tKontot finns inte.");
+                Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+                Console.ReadKey();
+            }
+        }
+        else
+        {
+            Console.WriteLine("\n\tError: Ogiltigt input.");
+        }
     }
 
-    // Method to logout
+    // Method to logout and return to login screen
     static void Logout()
     {
-       
+        currentUser = null;
+        Console.Clear();
+        Console.WriteLine("\n\tDu loggas ut...");
+        Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+        Console.ReadKey();
+        Login();
     }
 }
