@@ -33,16 +33,50 @@ class Program
     // Creates a static list with the User object for use in other methods
     static List<User> users = new List<User>
     {
-        new User("user1", "1234"),
-        new User("user2", "5678"),
-        new User("user3", "4321"),
-        new User("user4", "8765"),
+        new User("user1", "1234")
+        {
+            Accounts = new List<Account>
+            {
+                new Account("Lönekonto", 5000.0m),
+                new Account("Sparkonto", 10000.0m)
+            }
+        },
+        new User("user2", "5678")
+        {
+            Accounts = new List<Account>
+            {
+                new Account("Lönekonto", 7500.0m),
+                new Account("Sparkonto", 8000.0m)
+            }
+        },
+        new User("user3", "4321")
+        {
+            Accounts = new List<Account>
+            {
+                new Account("Lönekonto", 6000.0m),
+                new Account("Sparkonto", 12000.0m)
+            }
+        },
+        new User("user4", "8765")
+        {
+            Accounts = new List<Account>
+            {
+                new Account("Lönekonto", 9000.0m),
+                new Account("Sparkonto", 6000.0m)
+            }
+        },
         new User("user5", "9876")
+        {
+            Accounts = new List<Account>
+            {
+                new Account("Lönekonto", 6500.0m),
+                new Account("Sparkonto", 10500.0m)
+            }
+        }
     };
 
     static User currentUser = null;
     static int loginAttempts = 0;
-    static bool run = true;
 
     static void Main(string[] args)
     {
@@ -52,6 +86,7 @@ class Program
     // Menu for easy navigation
     static void Menu()
     {
+        bool run = true;
 
         while (run)
         {
@@ -68,7 +103,7 @@ class Program
                 switch (input)
                 {
                     case 1:
-                        //BankBalance
+                        BankBalance();
                         break;
                     case 2:
                         //BankTransfer
@@ -90,7 +125,9 @@ class Program
         }
     }
 
-    // Method to verify login credentials
+    /* Method to verify login credentials
+       Looks to find Username and Pin, throws user out if
+       3 failed attempts*/
     static void Login()
     {
         Console.WriteLine("\n\tVälkommen till Bankomaten!");
@@ -127,7 +164,12 @@ class Program
     // Method to check bank balance
     static void BankBalance()
     {
+        Console.WriteLine("\n\tDina konton och saldo:");
 
+        foreach (var account in currentUser.Accounts)
+        {
+            Console.WriteLine($"\n\t{account.Name}: {account.Balance:C}");
+        }
     }
 
     // Method to transfer between accounts
