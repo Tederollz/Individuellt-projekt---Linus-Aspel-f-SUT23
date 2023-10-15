@@ -42,6 +42,7 @@ class Program
 
     static User currentUser = null;
     static int loginAttempts = 0;
+    static bool run = true;
 
     static void Main(string[] args)
     {
@@ -51,7 +52,6 @@ class Program
     // Menu for easy navigation
     static void Menu()
     {
-        bool run = true;
 
         while (run)
         {
@@ -61,6 +61,7 @@ class Program
                 "\n\t[2] Överföring mellan konton" +
                 "\n\t[3] Ta ut pengar" +
                 "\n\t[4] Logga ut");
+            Console.Write("\n\t");
 
             if (int.TryParse(Console.ReadLine(), out int input))
             {
@@ -84,36 +85,66 @@ class Program
             {
                 Console.WriteLine("\n\tError: Ogiltigt input, Vänligen ange 1-4.");
             }
-            Console.WriteLine("\n\tKlicka enter för att komma till huvudmenyn");
+            Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta");
             Console.ReadKey();
         }
     }
+
     // Method to verify login credentials
     static void Login()
     {
+        Console.WriteLine("\n\tVälkommen till Bankomaten!");
         while (loginAttempts < 3)
         {
+            Console.Write("\n\tAnge ditt Användar-ID: ");
+            string username = Console.ReadLine();
 
+            Console.Write("\n\tAnge din pinkod: ");
+            string pin = Console.ReadLine();
+
+            User UserLogin = users.Find(u => u.Username == username && u.Pin == pin);
+
+            if (UserLogin != null)
+            {
+                currentUser = UserLogin;
+                loginAttempts = 0;
+                Console.WriteLine("\n\tInloggning lyckades." +
+                    "\n\tTryck \"Enter\" för att Fortsätta ");
+                Console.ReadKey();
+                Menu();
+            }
+            else
+            {
+                Console.WriteLine("\n\tFelaktigt användarnamn eller pinkod. Försök igen.");
+                loginAttempts++;
+            }
         }
+        Console.WriteLine("\n\tFör många felaktiga inloggningsförsök. " +
+            "\n\tProgrammet avslutas....");
+        Console.ReadKey();
     }
+
     // Method to check bank balance
     static void BankBalance()
     {
 
     }
+
     // Method to transfer between accounts
     static void BankTransfer()
     {
 
     }
+
     // Method to Withdraw from accounts
     static void Withdraw()
     {
 
     }
+
     // Method to logout
     static void Logout()
     {
-        Menu();
+       
     }
 }
