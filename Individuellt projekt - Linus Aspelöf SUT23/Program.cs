@@ -10,12 +10,14 @@ class User
     public string Username { get; set; }
     public string Pin { get; set; }
     public List<Account> Accounts { get; set; }
+    public string[] UserDetails { get; set; }
 
-    public User(string username, string pin)
+    public User(string username, string pin, string[] userDetails)
     {
         Username = username;
         Pin = pin;
         Accounts = new List<Account>();
+        UserDetails = userDetails;
     }
 }
 
@@ -36,7 +38,7 @@ class Program
        Also adds a list element with accounts for each user*/
     static List<User> users = new List<User>
     {
-        new User("user1", "1234")
+        new User("user1", "1234", new string[] {"John Doe", "user1@example.com"})
         {
             Accounts = new List<Account>
             {
@@ -44,7 +46,7 @@ class Program
                 new Account("Sparkonto", 10000.0m)
             }
         },
-        new User("user2", "5678")
+        new User("user2", "5678", new string[] {"John Doe", "user2@example.com"})
         {
             Accounts = new List<Account>
             {
@@ -52,7 +54,7 @@ class Program
                 new Account("Sparkonto", 8000.0m)
             }
         },
-        new User("user3", "4321")
+        new User("user3", "4321", new string[] {"Jane Doe", "user3@example.com"})
         {
             Accounts = new List<Account>
             {
@@ -60,7 +62,7 @@ class Program
                 new Account("Sparkonto", 12000.0m)
             }
         },
-        new User("user4", "8765")
+        new User("user4", "8765", new string[] {"Tony Stark", "user4@example.com"})
         {
             Accounts = new List<Account>
             {
@@ -68,7 +70,7 @@ class Program
                 new Account("Sparkonto", 6000.0m)
             }
         },
-        new User("user5", "9876")
+        new User("user5", "9876", new string[] {"Obi-Wan Kenobi", "user5@example.com"})
         {
             Accounts = new List<Account>
             {
@@ -96,9 +98,10 @@ class Program
             Console.Clear();
             Console.WriteLine("\n\tVälj en av följande alternativ:\n" +
                 "\n\t[1] Se dina konton och saldo" +
-                "\n\t[2] Överföring mellan konton" +
-                "\n\t[3] Ta ut pengar" +
-                "\n\t[4] Logga ut");
+                "\n\t[2] Visa E-postadress" +
+                "\n\t[3] Överföring mellan konton" +
+                "\n\t[4] Ta ut pengar" +
+                "\n\t[5] Logga ut");
             Console.Write("\n\t");
 
             if (int.TryParse(Console.ReadLine(), out int input))
@@ -111,12 +114,15 @@ class Program
                         Console.ReadKey();
                         break;
                     case 2:
-                        BankTransfer();
+                        ViewEmail();
                         break;
                     case 3:
-                        Withdraw();
+                        BankTransfer();
                         break;
                     case 4:
+                        Withdraw();
+                        break;
+                    case 5:
                         Logout();
                         break;
                 }
@@ -128,6 +134,16 @@ class Program
                 Console.ReadKey();
             }
         }
+    }
+
+    static void ViewEmail()
+    {
+        Console.Clear();
+        Console.WriteLine("\n\t-- E-postadress --");
+        Console.WriteLine($"\n\tE-postadress: {currentUser.UserDetails[1]}");
+
+        Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+        Console.ReadKey();
     }
 
     /* Method to verify login credentials
@@ -151,7 +167,7 @@ class Program
             {
                 currentUser = UserLogin;
                 loginAttempts = 0;
-                Console.WriteLine("\n\tInloggning lyckades." +
+                Console.WriteLine($"\n\tInloggning lyckades. Välkommen, {currentUser.UserDetails[0]}!" +
                     "\n\tTryck \"Enter\" för att Fortsätta ");
                 Console.ReadKey();
                 Menu();
@@ -283,6 +299,8 @@ class Program
         else
         {
             Console.WriteLine("\n\tError: Ogiltigt input.");
+            Console.WriteLine("\n\tTryck \"Enter\" för att Fortsätta ");
+            Console.ReadKey();
         }
     }
 
